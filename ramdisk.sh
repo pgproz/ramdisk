@@ -10,6 +10,40 @@ usage() {
     echo "  ramdisk.sh start <name> --size <size>"
     echo "  ramdisk.sh stop <name>"
     echo "  ramdisk.sh status <name>"
+    echo ""
+    echo "Size examples: 512M, 1G, 0.5G"
+}
+
+normalize_size() {
+    local raw="$1"
+    local cleaned value unit factor bytes
+
+    cleaned="${raw//[[:space:]]/}"
+
+    if [[ "$cleaned" =~ ^([0-9]+([.][0-9]+)?)([KkMmGgTt]?)([Bb]?)$ ]]; then
+        value="${BASH_REMATCH[1]}"
+        unit="${BASH_REMATCH[3]}"
+
+        case "$unit" in
+            "" ) factor=1048576 ;;
+            [Kk]) factor=1024 ;;
+            [Mm]) factor=1048576 ;;
+            [Gg]) factor=1073741824 ;;
+            [Tt]) factor=1099511627776 ;;
+            *) return 1 ;;
+        esac
+
+        bytes="$(awk -v v="$value" -v f="$factor" 'BEGIN { printf "%.0f", v * f }')"
+
+        if [[ "$bytes" -lt 1048576 ]]; then
+            return 1
+        fi
+
+        echo "$bytes"
+        return 0
+    fi
+
+    return 1
 }
 
 start() {
@@ -32,6 +66,11 @@ start() {
 
     MOUNT="$BASE/$NAME"
 
+    SIZE_BYTES="$(normalize_size "$SIZE")" || {
+        echo "[ERROR] Invalid size '$SIZE'. Use values like 512M, 1G, or 0.5G (minimum 1M)."
+        exit 1
+    }
+
     mkdir -p "$MOUNT"
 
     echo "[INFO] Mounting $NAME ($SIZE) at $MOUNT"
@@ -41,7 +80,7 @@ start() {
         exit 0
     fi
 
-    sudo mount -t tmpfs -o size="$SIZE" tmpfs "$MOUNT"
+    sudo mount -t tmpfs -o size="$SIZE_BYTES" tmpfs "$MOUNT"
 
     if mountpoint -q "$MOUNT"; then
         echo "[OK] Mounted"

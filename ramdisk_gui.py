@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import re
 import subprocess
 
 from PySide6.QtWidgets import (
@@ -13,6 +14,7 @@ from PySide6.QtCore import QTimer
 VERSION="3.1.2"
 RAMDISK_CMD = "ramdisk.sh"
 BASE_DIR = os.path.expanduser("~/ramdisks")
+SIZE_PATTERN = re.compile(r"^\s*\d+(?:\.\d+)?\s*(?:[kKmMgGtT](?:[bB])?)?\s*$")
 
 
 def run_cmd(args):
@@ -42,6 +44,10 @@ def get_usage(path):
         return percent, f"{parts[2]}/{parts[1]}"
     except:
         return 0, "N/A"
+
+
+def is_valid_size(size):
+    return bool(SIZE_PATTERN.fullmatch(size))
 
 
 class App(QWidget):
@@ -152,8 +158,22 @@ class App(QWidget):
         if not ok or not name:
             return
 
-        size, ok = QInputDialog.getText(self, "Size", "Size:", text="1G")
+        size, ok = QInputDialog.getText(
+            self,
+            "Size",
+            "Size (examples: 512M, 1G, 0.5G):",
+            text="512M"
+        )
         if not ok:
+            return
+
+        size = size.strip()
+        if not size or not is_valid_size(size):
+            QMessageBox.warning(
+                self,
+                "Invalid size",
+                "Use a value like 512M, 1G, or 0.5G."
+            )
             return
 
         # 🔥 Encryption dialog restored

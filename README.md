@@ -55,46 +55,46 @@ Typical workflow:
 
 General syntax:
 
-./ramdisk.sh <command> [options]
+`./ramdisk.sh <command> [options]`
 
 Commands:
 
-- start <name> --size <size> [--persist|--no-persist]
-- mount <name>
-- stop <name>
-- delete <name>
-- status <name>
-- version
+- **start** <name> --size <size> [--persist|--no-persist]
+- **mount** <name>
+- **stop** <name>
+- **delete** <name>
+- **status** <name>
+- **version**
 
 CLI examples:
 
 Create and mount a 512M disk:
 
-./ramdisk.sh start work --size 512M
+`./ramdisk.sh start work --size 512M`
 
 Create and mount a persistent 32M disk:
 
-./ramdisk.sh start test --size 32M --persist
+`./ramdisk.sh start test --size 32M --persist`
 
 Mount an existing disk using saved config:
 
-./ramdisk.sh mount test
+`./ramdisk.sh mount test`
 
 Check status:
 
-./ramdisk.sh status test
+`./ramdisk.sh status test`
 
 Stop disk (saves snapshot if persistent):
 
-./ramdisk.sh stop test
+`./ramdisk.sh stop test`
 
 Delete disk config and snapshot:
 
-./ramdisk.sh delete test
+`./ramdisk.sh delete test`
 
 Show script version:
 
-./ramdisk.sh version
+`./ramdisk.sh version`
 
 ## Notes
 

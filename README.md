@@ -103,6 +103,8 @@ Show script version:
 - Disk metadata is stored under ~/ramdisks/.meta.
 
 ## To add a desktop file and icon in linux
-1. mkdir -p ~/.local/share/applications
-2. copy ramdisk-manager.desktop into it
-3. update-desktop-database ~/.local/share/applications 2>/dev/null || true
+1. cp ramdisk-manager.ico ~/.local/share/icons/hicolor/256x256/apps/ramdisk-manager.ico
+2. mkdir -p ~/.local/share/applications
+3. copy ramdisk-manager.desktop into it
+4. update-desktop-database ~/.local/share/applications 2>/dev/null || true
+

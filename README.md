@@ -101,3 +101,8 @@ Show script version:
 - The script mounts tmpfs with user uid and gid options for better file access after mount.
 - Persistent data is saved as tar.gz snapshots under ~/ramdisks/.snapshots.
 - Disk metadata is stored under ~/ramdisks/.meta.
+
+## To add a desktop file and icon in linux
+1. mkdir -p ~/.local/share/applications
+2. copy ramdisk-manager.desktop into it
+3. update-desktop-database ~/.local/share/applications 2>/dev/null || true
